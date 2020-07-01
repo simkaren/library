@@ -1,4 +1,4 @@
-// 検証済み(https://atcoder.jp/contests/abc137/submissions/7586031)
+// 検証済み(https://atcoder.jp/contests/abc137/submissions/14129913)
 
 #include <bits/stdc++.h>
 
@@ -20,12 +20,7 @@ struct BellmanFord {
 	int n; // 頂点数
 	vector<vector<int>> G;
 	vector<int> used, reach;
-	BellmanFord(int number) {
-		n = number;
-		vector<vector<int>> G_(n);
-		vector<int> used_(n, 0), reach_(n, 0);
-		G = G_; used = used_; reach = reach_;
-	}
+	BellmanFord(int n) : n(n), G(n), used(n, 0), reach(n, 0) {}
 
 	vector<edge> es;
 	void add_edge(int u, int v, T c) {
@@ -84,12 +79,8 @@ signed main() {
 	int neg;
 	int res = g.build(1, n, neg);
 
-	if (neg) {
-		cout << -1 << endl;
-	}
-	else {
-		cout << max(0, -res) << endl;
-	}
+	if (neg) cout << -1 << endl;
+	else cout << max(0, -res) << endl;
 
 	return 0;
 }
