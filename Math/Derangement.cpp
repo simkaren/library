@@ -2,6 +2,8 @@
 
 using namespace std;
 
+#define ll long long
+
 constexpr ll mod = 1000000007LL;
 
 // 攪乱順列の個数を計算する
