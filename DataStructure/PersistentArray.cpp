@@ -12,7 +12,7 @@ struct PersistentArray {
 	};
 private:
 	node* root = nullptr;
-	node* build(node* t, T& data, int idx) {
+	node* build(node* t, const T& data, int idx) {
 		if (!t) t = new node();
 		if (idx == 0) {
 			t->data = data;
@@ -45,7 +45,7 @@ private:
 	}
 public:
 	unsigned int size;
-	PersistentArray(vector<T>& v) {
+	PersistentArray(const vector<T>& v) {
 		size = v.size();
 		for (int i = 0; i < (int)size; ++i)
 			root = build(root, v[i], i);
@@ -59,7 +59,7 @@ public:
 	}
 	PersistentArray(node* root, unsigned int size) :
 		root(root), size(size) {}
-	T get(int& idx) {
+	T get(const int& idx) {
 		assert(("Index is out of range.", 0 <= idx && idx < (int)size));
 		return get(root, idx);
 	}
