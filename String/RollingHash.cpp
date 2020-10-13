@@ -1,42 +1,43 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 #define ll long long
 
+template<int n_mod = 2>
 struct RollingHash{
-    string text; // text
-    int n; // number of characters
-    int base1 = 1009, base2 = 1007;
-    ll mod1 = (ll)1e9 + 9, mod2 = (ll)1e9 + 7;
-    ll* pow1;
-    ll* pow2;
-    ll* hash1;
-    ll* hash2;
-    /* constructor */
-    RollingHash(string s){
-        text = s;
-        n = text.size();
-        hash1 = new ll[n + 1];
-        hash2 = new ll[n + 1];
-        pow1 = new ll[n + 1];
-        pow2 = new ll[n + 1];
-        hash1[0] = hash2[0] = 0;
-        pow1[0] = pow2[0] = 1;
-        for (int i = 0;i < n;++i){
-            hash1[i + 1] = (hash1[i] + text[i]) * base1 % mod1;
-            hash2[i + 1] = (hash2[i] + text[i]) * base2 % mod2;
-            pow1[i + 1] = pow1[i] * base1 % mod1;
-            pow2[i + 1] = pow2[i] * base2 % mod2;
+    using hash_arr = std::array<ll, n_mod>;
+    const int base = 1009;
+    const ll p_mod[4] = {1000000009LL, 1000000007LL, 998244353LL, 469762049LL};
+
+    std::string text;
+    int len;
+    vector<hash_arr> pw, hs;
+
+    // constructor
+    RollingHash(string& S){
+        static_assert(1 <= n_mod && n_mod <= 4);
+        text = S; len = S.length();
+        pw.resize(len + 1);
+        hs.resize(len + 1);
+        for (int j = 0; j < n_mod; ++j)
+            hs[0].at(j) = 0LL, pw[0].at(j) = 1LL;
+        for (int i = 0; i < len; ++i){
+            for (int j = 0; j < n_mod; ++j){
+                hs[i + 1].at(j) = (hs[i].at(j) + text[i]) * base % p_mod[j];
+                pw[i + 1].at(j) = pw[i].at(j) * base % p_mod[j];
+            }
         }
+    } 
+
+    // text[l, r)のハッシュ値を計算する
+    hash_arr get_hash(int l, int r){
+        hash_arr ret;
+        for (int j = 0; j < n_mod; ++j){
+            ret.at(j) = hs[r].at(j) - hs[l].at(j) * pw[r - l].at(j) % p_mod[j];
+            if (ret.at(j) < 0) ret.at(j) += p_mod[j];
+        }
+        return ret;
     }
-    /* メモリの開放 */
-    void free(){ delete[] pow1,pow2,hash1,hash2; }
-    /* text[l,l+1,...,r-1]のハッシュ値を計算 */
-    pair<ll,ll> get(int l,int r){
-        pair<ll,ll> p;
-        p.first = ((hash1[r] - hash1[l] * pow1[r - l] % mod1) + mod1) % mod1;
-        p.second = ((hash2[r] - hash2[l] * pow2[r - l] % mod2) + mod2) % mod2;
-        return p;
-    }
+
+    // text全体のハッシュ値を計算する
+    hash_arr get(void){ return hs[len]; }
 };
