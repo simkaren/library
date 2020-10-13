@@ -1,16 +1,15 @@
 #include <bits/stdc++.h>
 
-#define ll long long
-
 template<int n_mod = 2>
 struct RollingHash{
-    using hash_arr = std::array<ll, n_mod>;
+    using hash_arr = std::array<long long, n_mod>;
     const int base = 1009;
-    const ll p_mod[4] = {1000000009LL, 1000000007LL, 998244353LL, 469762049LL};
+    const long long p_mod[4] = 
+    {1000000009LL, 1000000007LL, 998244353LL, 469762049LL};
 
     std::string text;
     int len;
-    vector<hash_arr> pw, hs;
+    std::vector<hash_arr> pw, hs;
 
     // constructor
     RollingHash(string& S){
