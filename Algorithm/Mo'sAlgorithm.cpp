@@ -1,42 +1,32 @@
-// 検証済み(https://www.spoj.com/status/ns=24508678)
-
 #include <bits/stdc++.h>
-
-using namespace std;
-
-#define ll long long
-#define ld long double
 
 // Mo's algorithm (Query Square Root Decomposition)
 struct Mo {
 private:
-	// 要素数nとその平方根width
+	// n : the number of element, width : sqrt(n)
 	int n, width;
-	// データが含まれているかを表すフラグ
-	vector<bool> v;
-	// クエリ
+	// whether the data is in or out
+	std::vector<bool> v;
+	// query
 	struct query {
-		int id; // クエリのid
-		int l, r; // クエリの対象区間[l,r)
+		int id;
+		int l, r;
 		query(int id, int l, int r) : id(id), l(l), r(r) {}
 	};
-	vector<query> q;
-	// data[idx] を処理
+	std::vector<query> q;
+	// process data[idx]
 	void distribute(int idx) {
 		if (v[idx]) del(idx);
 		else add(idx);
 		v[idx].flip();
 	}
 public:
-	// コンストラクタ(引数はデータ)
 	Mo(int n) : width((int)sqrt(n)), n(n), v(n, false) {}
-	// クエリの追加
 	void add_query(int l, int r) {
 		int id = q.size();
 		query new_q(id, l, r);
 		q.push_back(new_q);
 	}
-	// クエリのソート
 	void build() {
 		sort(
 			q.begin(), q.end(),
@@ -55,7 +45,7 @@ public:
 	void del(int idx) {
 		// TODO
 	}
-	// クエリを一つ処理する(処理したクエリのidが返される)
+	// process one query (returns the id of the query)
 	int process() {
 		static int ptr = 0;
 		static int nl = 0, nr = 0;

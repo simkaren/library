@@ -2,8 +2,6 @@
 
 #include <bits/stdc++.h>
 
-using namespace std;
-
 template<typename T, int LOG = 4>
 struct PersistentArray {
 	struct node {
@@ -112,6 +110,8 @@ struct PersistentUnionFind {
 		return -data[t].get(find(t, k));
 	}
 };
+
+using namespace std;
 
 int main(void) {
 	int N, Q; cin >> N >> Q;

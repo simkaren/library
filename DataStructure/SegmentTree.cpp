@@ -1,20 +1,18 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 template<typename T>
 struct SegmentTree {
 private:
 	int sz, n;
-	vector<T> data;
-	function<T(T, T)> f;
+	std::vector<T> data;
+	std::function<T(T, T)> f;
 	T identity_element;
 public:
 	/* constructor */
 	SegmentTree(
-		const vector<T>& v, // initial data
+		const std::vector<T>& v, // initial data
 		T identity_element, // identity element
-		function<T(T, T)> f // operation
+		std::function<T(T, T)> f // operation
 	) {
 		sz = v.size();
 		n = 1; while (n < sz) n <<= 1;
@@ -45,6 +43,8 @@ public:
 		return f(val_l, val_r);
 	}
 };
+
+using namespace std;
 
 const int INF = numeric_limits<int>::max();
 

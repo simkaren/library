@@ -2,25 +2,21 @@
 
 #include <bits/stdc++.h>
 
-using namespace std;
-
-#define ll long long
-
 /* Sparse Tableを利用したRangeMinimumQuery */
 template <typename T>
 struct RMinQ_SparseTable {
 private:
 	// log_table : logの値
 	// table[i][k] : インデックスiから長さ1<<kの最小値のインデックス
-	vector<int> log_table;
-	vector<vector<int>> table;
+	std::vector<int> log_table;
+	std::vector<std::vector<int>> table;
 public:
 	// n : 要素数
 	// element : 要素
 	int n;
-	vector<T> element;
+	std::vector<T> element;
 	// コンストラクタ
-	RMinQ_SparseTable(vector<T> vec) {
+	RMinQ_SparseTable(const std::vector<T>& vec) {
 		n = vec.size();
 		element.resize(n);
 		for (int i = 0; i < n; ++i)
@@ -61,15 +57,15 @@ struct RMaxQ_SparseTable {
 private:
 	// log_table : logの値
 	// table[i][k] : インデックスiから長さ1<<kの最大値のインデックス
-	vector<int> log_table;
-	vector<vector<int>> table;
+	std::vector<int> log_table;
+	std::vector<vector<int>> table;
 public:
 	// n : 要素数
 	// element : 要素
 	int n;
-	vector<T> element;
+	std::vector<T> element;
 	// コンストラクタ
-	RMaxQ_SparseTable(vector<T> vec) {
+	RMaxQ_SparseTable(const std::vector<T>& vec) {
 		n = vec.size();
 		element.resize(n);
 		for (int i = 0; i < n; ++i)
@@ -103,39 +99,3 @@ public:
 		return element[query_idx(l, r)];
 	}
 };
-
-int main() {
-	// 入力受け取り
-	int n; cin >> n;
-	vector<int> a(n), b(n);
-	for (int i = 0; i < n; ++i) cin >> a[i];
-	for (int i = 0; i < n; ++i) cin >> b[i];
-	// SparseTableの構築
-	RMaxQ_SparseTable<int> a_table(a);
-	RMinQ_SparseTable<int> b_table(b);
-	// 左端lについて、okな右端rの範囲を求める
-	ll res = 0;
-	for (int l = 0; l < n; ++l) {
-		if (a[l] > b[l]) continue;
-		if (a_table.query_value(l, n) < b_table.query_value(l, n)) break;
-		// r_min : max a[l:i] < min b[l:i]なる最大のi
-		int r_min = l, r_min_ng = n + 1;
-		while (r_min_ng - r_min > 1) {
-			int mid = (r_min + r_min_ng) / 2;
-			if (a_table.query_value(l, mid) < b_table.query_value(l, mid))
-				r_min = mid;
-			else r_min_ng = mid;
-		}
-		// r_max : max a[l:i] <= min b[l:i]なる最大のi
-		int r_max = l, r_max_ng = n + 1;
-		while (r_max_ng - r_max > 1) {
-			int mid = (r_max + r_max_ng) / 2;
-			if (a_table.query_value(l, mid) <= b_table.query_value(l, mid))
-				r_max = mid;
-			else r_max_ng = mid;
-		}
-		res += (ll)r_max - r_min;
-	}
-	cout << res << endl;
-	return 0;
-}

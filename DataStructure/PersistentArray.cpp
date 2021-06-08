@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 template<typename T, int LOG = 4>
 struct PersistentArray {
 	struct node {
@@ -70,6 +68,8 @@ public:
 		return PersistentArray(tmp.first, size);
 	}
 };
+
+using namespace std;
 
 int main(void) {
 	PersistentArray<int> a(6);

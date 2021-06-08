@@ -1,20 +1,18 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 template<typename T>
 struct SegmentTree {
 private:
 	int sz, n;
-	vector<T> data;
-	function<T(T, T)> f;
+	std::vector<T> data;
+	std::function<T(T, T)> f;
 	T identity_element;
 public:
 	/* constructor */
 	SegmentTree(
-		vector<T> v, // initial data
+		const std::vector<T>& v, // initial data
 		T identity_element, // identity element
-		function<T(T, T)> f // operation
+		std::function<T(T, T)> f // operation
 	) {
 		sz = v.size();
 		n = 1; while (n < sz) n <<= 1;
@@ -46,20 +44,26 @@ public:
 	}
 };
 
+/*
+	配列aのi番目までのLISの長さをi番目に格納した配列を返す
+*/
 template<typename T>
-int LIS(vector<T>& a){
-    map<T, int> com;
+std::vector<int> LIS(std::vector<T>& a){
+    std::map<T, int> com;
     for (auto ai : a) com[ai];
     int t = 0;
     for (auto& e : com)
         e.second = t++;
     SegmentTree<int> seg(
-        vector<int>(com.size(), 0), 0,
-        [](int x, int y) { return max(x, y); }
+        std::vector<int>(com.size(), 0), 0,
+        [](int x, int y) { return std::max(x, y); }
     );
+	std::vector<int> ret(a.size());
+	int ptr = 0;
     for (auto ai : a){
         int v = com[ai];
         seg.update(v, seg.get(0, v) + 1);
+		ret[ptr++] = seg.get(0, com.size());
     }
-    return seg.get(0, com.size());
+    return ret;
 }
