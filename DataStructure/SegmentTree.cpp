@@ -12,7 +12,7 @@ private:
 public:
 	/* constructor */
 	SegmentTree(
-		vector<T> v, // initial data
+		const vector<T>& v, // initial data
 		T identity_element, // identity element
 		function<T(T, T)> f // operation
 	) {
