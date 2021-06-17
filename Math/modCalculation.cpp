@@ -22,8 +22,8 @@ ll inverse(ll a) {
 	return modpow(a, mod - 2);
 }
 
-// kの階乗を計算する.(sgnを0以外に設定すると逆元を返す)
-ll fact(ll k, int sgn = 0) {
+// kの階乗を計算する.
+ll fact(ll k, bool inverse = false) {
 	static vector<ll> fac(2, 1LL);
 	static vector<ll> inv(2, 1LL);
 	static vector<ll> finv(2, 1LL);
@@ -34,8 +34,7 @@ ll fact(ll k, int sgn = 0) {
 		finv.push_back(finv[nx - 1] * inv[nx] % mod);
 		++nx;
 	}
-	if (sgn == 0)
-		return fac[k];
+	if (!inverse) return fac[k];
 	return finv[k];
 }
 
