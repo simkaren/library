@@ -149,6 +149,40 @@ using points = std::vector<point<T>>;
 template<typename T>
 using polygon = std::vector<point<T>>;
 
+// closest pair of points
+template<typename T>
+long double __closest_pair_of_points(points<T>& ps, int l, int r, long double eps = 1e-8L){
+    if (r - l <= 1) return std::numeric_limits<long double>::max();
+    const int m = (l + r) / 2;
+    long double x_mid = ps[m].first;
+    long double left_half = __closest_pair_of_points(ps, l, m);
+    long double right_half = __closest_pair_of_points(ps, m, r);
+    long double res = std::min(left_half, right_half);
+    std::inplace_merge(
+        ps.begin() + l, ps.begin() + m, ps.begin() + r,
+        [](const point<T> a, const point<T> b){
+            return a.second < b.second;
+        }
+    );
+    std::vector<int> idx;
+    for (int i = l; i < r; ++i){
+        if (std::abs(ps[i].first - x_mid) > res + eps)
+            continue;
+        for (int j = (int)idx.size() - 1; j >= 0; --j){
+            long double dy = ps[i].second - ps[idx[j]].second;
+            if (dy > res + eps) break;
+            res = std::min(res, distl(ps[i], ps[idx[j]]));
+        }
+        idx.push_back(i);
+    }
+    return res;
+}
+template<typename T>
+long double closest_pair_of_points(points<T> p, long double eps = 1e-8L){
+    std::sort(p.begin(), p.end());
+    return __closest_pair_of_points(p, 0, (int)p.size(), eps);
+}
+
 // convex hull
 template<typename T>
 polygon<T> convex_hull(points<T> p, long double eps = 1e-8L){
