@@ -2,10 +2,6 @@
 
 #include <bits/stdc++.h>
 
-using namespace std;
-
-#define ll long long
-
 template<typename T>
 struct Graph {
 	struct edge {
@@ -13,17 +9,10 @@ struct Graph {
 		T cap;
 		edge(int to, int rev, T cap) : to(to), rev(rev), cap(cap) {}
 	};
-
+private:
 	int n;
-	vector<vector<edge>> g;
-	vector<bool> used;
-
-	Graph(int n) : n(n), g(n) {}
-
-	void add_edge(int from, int to, T cap) {
-		g[from].push_back(edge(to, (int)g[to].size(), cap));
-		g[to].push_back(edge(from, (int)g[from].size() - 1, (T)0));
-	}
+	std::vector<std::vector<edge>> g;
+	std::vector<bool> used;
 
 	T dfs(int v, int t, T f) {
 		if (v == t) return f;
@@ -42,27 +31,22 @@ struct Graph {
 		return (T)0;
 	}
 
+public:
+	Graph(int n) : n(n), g(n) {}
+
+	void add_edge(int from, int to, T cap) {
+		g[from].push_back(edge(to, (int)g[to].size(), cap));
+		g[to].push_back(edge(from, (int)g[from].size() - 1, (T)0));
+	}
+
 	T max_flow(int s, int t) {
 		T res = 0;
 		while (1) {
-			used = vector<bool>(n, false);
-			T tmp = dfs(s, t, numeric_limits<T>::max());
+			used = std::vector<bool>(n, false);
+			T tmp = dfs(s, t, std::numeric_limits<T>::max());
 			if (tmp == 0) break;
 			res += tmp;
 		}
 		return res;
 	}
 };
-
-int main(void) {
-	int V, E;
-	cin >> V >> E;
-	Graph<ll> g(V);
-	while (E--) {
-		int u, v; ll c;
-		cin >> u >> v >> c;
-		g.add_edge(u, v, c);
-	}
-	cout << g.max_flow(0, V - 1) << endl;
-	return 0;
-}

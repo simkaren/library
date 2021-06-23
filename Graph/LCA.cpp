@@ -1,17 +1,29 @@
-// 検証済み(http://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=4221353#2)
+// 検証済み(https://judge.u-aizu.ac.jp/onlinejudge/review.jsp?rid=5605513)
 
 #include <bits/stdc++.h>
 
-using namespace std;
-
 struct LCA {
+private:
 	int n, LOG_N;
-	vector<vector<int>> G;
-	vector<int> par;
-	vector<int> dep;
-	vector<vector<int>> table;
+	std::vector<std::vector<int>> G;
+	std::vector<int> par;
+	std::vector<int> dep;
+	std::vector<std::vector<int>> table;
+
+	/* construct par and dep by dfs */
+	void dfs(int s = 0, int p = 0, int d = 0) {
+		static std::vector<bool> visited;
+		visited.resize(n, false);
+		visited[s] = true;
+		par[s] = p; dep[s] = d;
+		for (auto nx : G[s])
+			if (!visited[nx])
+				dfs(nx, s, d + 1);
+	}
+
+public:
 	/* constructor */
-	LCA(vector<vector<int>>& G) {
+	LCA(std::vector<std::vector<int>>& G) {
 		n = G.size();
 		this->G = G;
 		par.resize(n);
@@ -21,20 +33,7 @@ struct LCA {
 			tmp >>= 1;
 			++LOG_N;
 		}
-		table.resize(n, vector<int>(LOG_N, -1));
-	}
-	/* construct par and dep by dfs */
-	void dfs(int s = 0, int p = 0, int d = 0) {
-		static vector<bool> visited;
-		visited.resize(n, false);
-		visited[s] = true;
-		par[s] = p; dep[s] = d;
-		for (auto nx : G[s])
-			if (!visited[nx])
-				dfs(nx, s, d + 1);
-	}
-	/* construct par, dep, and table */
-	void build() {
+		table.resize(n, std::vector<int>(LOG_N, -1));
 		dfs();
 		for (int i = 0; i < n; ++i)
 			for (int j = 0; j < LOG_N; ++j)
@@ -45,7 +44,7 @@ struct LCA {
 	}
 	/* find LCA of u and v */
 	int find_LCA(int u, int v) {
-		if (dep[u] > dep[v]) swap(u, v);
+		if (dep[u] > dep[v]) std::swap(u, v);
 		for (int i = LOG_N - 1; i >= 0; --i)
 			if ((dep[v] - dep[u]) & (1 << i))
 				v = table[v][i];
@@ -58,23 +57,3 @@ struct LCA {
 		return table[u][0];
 	}
 };
-
-int main() {
-	int n; cin >> n;
-	vector<vector<int>> G(n);
-	for (int i = 0; i < n; ++i) {
-		int k; cin >> k;
-		while (k--) {
-			int c; cin >> c;
-			G[i].push_back(c);
-			G[c].push_back(i);
-		}
-	}
-	LCA lca(G); lca.build();
-	int q; cin >> q;
-	while (q--) {
-		int u, v; cin >> u >> v;
-		cout << lca.find_LCA(u, v) << endl;
-	}
-	return 0;
-}

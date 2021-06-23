@@ -39,7 +39,7 @@ private:
 			idx >> LOG
 		);
 		t->children[idx & ((1 << LOG) - 1)] = p.first;
-		return { t, p.second };
+		return {t, p.second};
 	}
 public:
 	unsigned int size;

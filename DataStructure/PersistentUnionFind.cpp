@@ -74,18 +74,18 @@ public:
 
 struct PersistentUnionFind {
 	map<int, PersistentArray<int>> data;
-	// 頂点数nの初期グラフを生成(-1番目とする)
+	// generate initial graph with n nodes (id : -1)
 	PersistentUnionFind(int n) {
 		PersistentArray<int> init(vector<int>(n, -1));
 		data[-1] = init;
 	}
-	// t番目のグラフでのkの集合
+	// find k in the t-th graph
 	int find(int t, int k) {
 		int tmp = data[t].get(k);
 		if (tmp < 0) return k;
 		return find(t, tmp);
 	}
-	// t番目のグラフでunite(x, y)をしたものをidx番とする
+	// unite x and y on the t-th graph (result id : idx)
 	bool unite(int t, int x, int y, int idx) {
 		PersistentArray<int> tmp = data[t];
 		x = find(t, x);
@@ -101,11 +101,11 @@ struct PersistentUnionFind {
 		data[idx] = new_data;
 		return true;
 	}
-	// t番目のグラフでaとbは同じ集合に属すか
+	// whether a and b belongs to the same group in the t-th graph
 	bool same(int t, int a, int b) {
 		return (find(t, a) == find(t, b));
 	}
-	// t番目のグラフでkの属する集合のサイズ
+	// the size of the group in which k belongs in the t-th graph
 	int size(int t, int k) {
 		return -data[t].get(find(t, k));
 	}
