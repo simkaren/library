@@ -229,4 +229,46 @@ double area(const polygon<T>& p){ return (double)areal(p); }
 template<typename T>
 float areaf(const polygon<T>& p){ return (float)areaf(p); }
 
+// ==== FROM HERE UNDER CONSTRUCTION ====
+
+template<typename T>
+using line = std::pair<point<T>, point<T>>;
+template<typename T>
+using segment = std::pair<point<T>, point<T>>;
+
+// l1 // l2?
+template<typename T>
+bool parallel(const line<T>& l1, const line<T>& l2, long double eps = 1e-8L){
+    T crs = cross(l1.second - l1.first, l2.second - l2.first);
+    return std::abs(crs) < eps;
+}
+
+// l1 ⊥ l2?
+template<typename T>
+bool perpendicular(const line<T>& l1, const line<T>& l2, long double eps = 1e-8L){
+    T d = dot(l1.second - l1.first, l2.second - l2.first);
+    return std::abs(d) < eps;
+}
+
+// orthogonal projection of p on l
+template<typename T>
+point<long double> projectionl(const point<T>& p, const line<T>& l){
+    long double tmp = dot(p - l.first, l.first - l.second);
+    tmp /= absl(l.first - l.second);
+    long double x = l.first.first + (l.first.first - l.second.first) * tmp;
+    long double y = l.first.second + (l.first.second - l.second.second) * tmp;
+    return {x, y};
+}
+template<typename T>
+point<double> projection(const point<T>& p, const line<T>& l){
+    point<long double> tmp = projectionl(p, l);
+    return {(double)tmp.first, (double)tmp.second};
+}
+template<typename T>
+point<float> projectionf(const point<T>& p, const line<T>& l){
+    point<long double> tmp = projectionl(p, l);
+    return {(float)tmp.first, (float)tmp.second};
+}
+
+
 } // namespace geometry
