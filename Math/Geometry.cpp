@@ -68,7 +68,7 @@ public:
 // p1 == p2?
 template<typename T>
 bool equal(const point<T>& p1, const point<T>& p2, long double eps = 1e-8L){
-    return absl(p1.first - p2.first) < eps && absl(p1.second - p2.second) < eps;
+    return std::abs(p1.first - p2.first) < eps && std::abs(p1.second - p2.second) < eps;
 }
 
 // cross product
@@ -229,8 +229,6 @@ double area(const polygon<T>& p){ return (double)areal(p); }
 template<typename T>
 float areaf(const polygon<T>& p){ return (float)areaf(p); }
 
-// ==== FROM HERE UNDER CONSTRUCTION ====
-
 template<typename T>
 using line = std::pair<point<T>, point<T>>;
 template<typename T>
@@ -245,18 +243,19 @@ bool parallel(const line<T>& l1, const line<T>& l2, long double eps = 1e-8L){
 
 // l1 ⊥ l2?
 template<typename T>
-bool perpendicular(const line<T>& l1, const line<T>& l2, long double eps = 1e-8L){
+bool orthogonal(const line<T>& l1, const line<T>& l2, long double eps = 1e-8L){
     T d = dot(l1.second - l1.first, l2.second - l2.first);
     return std::abs(d) < eps;
 }
 
-// orthogonal projection of p on l
+// orthogonal projection of p onto l
 template<typename T>
 point<long double> projectionl(const point<T>& p, const line<T>& l){
-    long double tmp = dot(p - l.first, l.first - l.second);
-    tmp /= absl(l.first - l.second);
-    long double x = l.first.first + (l.first.first - l.second.first) * tmp;
-    long double y = l.first.second + (l.first.second - l.second.second) * tmp;
+    long double tmp = dot(p - l.first, l.second - l.first);
+    long double l_len = absl(l.second - l.first);
+    tmp /= l_len * l_len;
+    long double x = l.first.first + (l.second.first - l.first.first) * tmp;
+    long double y = l.first.second + (l.second.second - l.first.second) * tmp;
     return {x, y};
 }
 template<typename T>
@@ -270,5 +269,23 @@ point<float> projectionf(const point<T>& p, const line<T>& l){
     return {(float)tmp.first, (float)tmp.second};
 }
 
+// reflection of p onto l
+template<typename T>
+point<long double> reflectionl(const point<T>& p, const line<T>& l){
+    point<long double> pj = projectionl(p, l);
+    long double x = 2 * pj.first - p.first;
+    long double y = 2 * pj.second - p.second;
+    return {x, y};
+}
+template<typename T>
+point<double> reflection(const point<T>& p, const line<T>& l){
+    point<long double> tmp = reflectionl(p, l);
+    return {(double)tmp.first, (double)tmp.second};
+}
+template<typename T>
+point<float> reflectionf(const point<T>& p, const line<T>& l){
+    point<long double> tmp = reflectionl(p, l);
+    return {(float)tmp.first, (float)tmp.second};
+}
 
 } // namespace geometry
