@@ -8,7 +8,7 @@ public:
     for (int i = 2; i <= max_value; ++i){
       if (data[i] != 0) continue;
       for (int j = i; j <= max_value; j += i)
-        data[j] = i;
+        if (data[j] == 0) data[j] = i;
     }
   }
   bool isPrime(int v){
